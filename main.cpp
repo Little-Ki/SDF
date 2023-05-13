@@ -56,12 +56,12 @@ int main()
   
 FT_Error error =FT_Init_FreeType( &library );
 FT_Face face;
- error = FT_New_Face( library, "C:\\Windows\\Fonts\\msuighur.ttf", 0,&face );
+ error = FT_New_Face( library, "C:\\Windows\\Fonts\\arial.ttf", 0,&face );
 
 FT_Set_Pixel_Sizes(face,256,256);
 
 int index = FT_Get_Char_Index(face,L'A');
-FT_Int32 loadflags =FT_LOAD_DEFAULT|FT_LOAD_NO_BITMAP;
+FT_Int32 loadflags = FT_LOAD_DEFAULT|FT_LOAD_NO_BITMAP;
 
 error = FT_Load_Glyph(face,index,loadflags);
 
@@ -70,7 +70,60 @@ error = FT_Load_Glyph(face,index,loadflags);
 FT_GlyphSlot pGlyphSlot = face->glyph;
 
 FT_Outline* outline = &pGlyphSlot->outline;
+FT_Vector* point;
 
+FT_Vector* limit;
+
+char*       tags;
+
+ 
+
+FT_Vector  v_last;
+
+FT_Vector  v_control;
+
+FT_Vector  v_start;
+int first = 0;
+for (auto i =0 ; i < outline->n_contours; i++) {
+    int  last =outline->contours[i];
+
+   limit= outline->points + last;
+
+   v_start= outline->points[first];
+
+   v_last  = outline->points[last];
+
+   v_control= v_start;
+
+   point= outline->points + first;
+
+   tags  = outline->tags  + first;
+
+   char tag   =FT_CURVE_TAG(tags[0]);
+
+ 
+
+   float fpriX = float(v_control.x);
+
+   float fpriY = -float(v_control.y);
+
+ 
+
+   float startX = fpriX;
+
+   float startY = fpriY;
+
+   while(point < limit)
+
+   {
+
+      point++;
+
+      tags++;
+
+      tag = FT_CURVE_TAG(tags[0]);
+   }
+}
   for(float i = 0.0; i < 1.0; i += 0.01) {
     auto p = bez.at(i);
     drawLine(bmp, pp.point.x, pp.point.y, p.point.x, p.point.y);

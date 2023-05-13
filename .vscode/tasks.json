@@ -14,6 +14,7 @@
         "${workspaceFolder}/bezier.cpp",
         "${workspaceFolder}/bitmap.cpp",
         "${workspaceFolder}/main.cpp",
+        "${workspaceFolder}/ft_proxy.cpp",
         "/link",
         "/LIBPATH:${workspaceFolder}\\freetype\\lib\\debug",
         "freetyped.lib",
