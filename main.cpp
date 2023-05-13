@@ -4,6 +4,8 @@
 #include "vec2.h"
 #include "bezier.h"
 
+#include <freetype/freetype.h>
+
 #define CLAMP(x, y, z) (z < x ? x : (x > y ? y : z))
 
 void drawLine(Bitmap &bm, int x0, int y0, int x1, int y1, float r = 1, float g = 0, float b = 0)
@@ -38,6 +40,7 @@ void drawLine(Bitmap &bm, int x0, int y0, int x1, int y1, float r = 1, float g =
 
 int main()
 {
+
   auto bmp = Bitmap(256, 256);
   auto bez = Bezier({
     vec2(10, 100),
@@ -48,6 +51,26 @@ int main()
     });
 
   auto pp = bez.at(0);
+  FT_Library library;
+
+  
+FT_Error error =FT_Init_FreeType( &library );
+FT_Face face;
+ error = FT_New_Face( library, "C:\\Windows\\Fonts\\msuighur.ttf", 0,&face );
+
+FT_Set_Pixel_Sizes(face,256,256);
+
+int index = FT_Get_Char_Index(face,L'A');
+FT_Int32 loadflags =FT_LOAD_DEFAULT|FT_LOAD_NO_BITMAP;
+
+error = FT_Load_Glyph(face,index,loadflags);
+
+ 
+
+FT_GlyphSlot pGlyphSlot = face->glyph;
+
+FT_Outline* outline = &pGlyphSlot->outline;
+
   for(float i = 0.0; i < 1.0; i += 0.01) {
     auto p = bez.at(i);
     drawLine(bmp, pp.point.x, pp.point.y, p.point.x, p.point.y);
