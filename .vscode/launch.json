@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Build debug and run",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${fileDirname}\\build\\debug\\${fileBasenameNoExtension}.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "console": "externalTerminal",
+      "preLaunchTask": "Debug"
+    }
+  ],
+  "version": "2.0.0"
+}
