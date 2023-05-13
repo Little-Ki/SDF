@@ -38,6 +38,9 @@ Bez Bezier::at(float t) {
 }
 
 void Bezier::get(const float& t, const std::vector<vec2>& points, vec2& p0, vec2& p1) {
+  if (points.size() < 2) {
+    return;
+  }
   if (points.size() == 2) {
     p0 = points[0];
     p1 = points[1];
