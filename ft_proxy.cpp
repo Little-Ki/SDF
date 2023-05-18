@@ -36,3 +36,7 @@ bool FTProxy::getGlyph(wchar_t symbol) {
   auto idx = charIndex(symbol);
   return getGlyph(idx);
 }
+
+void FTProxy::renderSDF() {
+  FT_Render_Glyph( m_face->glyph , FT_RENDER_MODE_SDF );
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <freetype/freetype.h>
+#include <functional>
 #include "string"
 
 class FTProxy {
@@ -18,6 +19,8 @@ public:
   bool getGlyph(int index);
   
   bool getGlyph(wchar_t symbol);
+
+  void renderSDF();
 
   std::string lastError();
 

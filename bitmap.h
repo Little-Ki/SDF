@@ -13,7 +13,7 @@ struct Color
 class Bitmap
 {
 public:
-    Bitmap(uint32_t width, uint32_t height);
+    Bitmap(uint32_t width, uint32_t height, bool flip_x  = false, bool flip_y = false);
 
     const Color &get(uint32_t x, uint32_t y);
 
@@ -31,4 +31,8 @@ private:
     Color m_pad;
 
     uint32_t m_width, m_height;
+
+    bool m_flip_x = 1;
+
+    bool m_flip_y = 1;
 };
