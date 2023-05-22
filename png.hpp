@@ -101,7 +101,6 @@ public:
     unsigned int c = 0, a = 1, b = 0, p = m_width * C + 1;
 
     if (!o.good()) {
-      std::cout << "Ofstream failed.";
       return false;
     }
     
