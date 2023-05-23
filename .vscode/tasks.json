@@ -13,6 +13,8 @@
         "/Fe${fileDirname}/build/debug/${fileBasenameNoExtension}.exe",
         "${workspaceFolder}/main.cpp",
         "${workspaceFolder}/ft_proxy.cpp",
+        "${workspaceFolder}/arg_parser.cpp",
+        "${workspaceFolder}/utils.cpp",
         "/link",
         "/LIBPATH:${workspaceFolder}\\freetype\\lib\\debug",
         "freetyped.lib",
