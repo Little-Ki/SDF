@@ -60,20 +60,20 @@ int main(int argc, char* argv[])
   auto ucode = Utils::utf8Unicode(str);
 
 
-  auto size = program.get<int>("imgsize", 2048);
-  auto fsize = program.get<int>("fontsize", 64);
-  auto outpath = program.get<std::string>("output", "");
-  auto png = PNG<1>(size, size);
+  auto imageSize = program.get<int>("imgsize", 2048);
+  auto fontSize = program.get<int>("fontsize", 64);
+  auto outFolder = program.get<std::string>("output", "");
+  auto png = PNG<1>(imageSize, imageSize);
   long baseline = 0;
 
-  auto baseX = 3U, baseY = 3U;
-  auto nextY = 3U;
+  auto baseX = 0U, baseY = 0U;
+  auto nextY = 0U;
 
   FT_Library library;
   FT_Face face;
   HANDLE_ERR(FT_Init_FreeType(&library));
   HANDLE_ERR(FT_New_Face(library, program.get<std::string>("font", "").c_str(), 0, &face));
-  HANDLE_ERR(FT_Set_Pixel_Sizes(face, 0, fsize));
+  HANDLE_ERR(FT_Set_Pixel_Sizes(face, 0, fontSize));
 
   for(auto& u : ucode) {
     FT_UInt index;
@@ -84,34 +84,43 @@ int main(int argc, char* argv[])
     baseline = std::max(baseline, hang);
   }
 
-  auto outIndex = 0;
+  unsigned int outIndex = 0;
+  unsigned int baseHeight = fontSize + 10;
+  unsigned int cellHeight = fontSize + 16 + baseline;
+  std::ofstream outtext(outFolder + "index.txt", std::ios::out | std::ios::trunc);
   
   for(auto& u : ucode) {
     FT_UInt index;
     index = FT_Get_Char_Index(face , u);
     HANDLE_ERR(FT_Load_Glyph(face, index , FT_LOAD_DEFAULT));
     HANDLE_ERR(FT_Render_Glyph(face->glyph , FT_RENDER_MODE_SDF));
-    const FT_Bitmap& bitmap = face->glyph->bitmap;
+    const auto& bitmap = face->glyph->bitmap;
+    const auto& metrics = face->glyph->metrics;
+    auto hang = (metrics.height - metrics.horiBearingY) / 64;
 
     auto img_width = bitmap.width;
     auto img_height = bitmap.rows;
 
-    if (baseX + img_width > size) {
-      baseX = 1;
-      baseY = nextY + 1;
+    if (baseX + img_width > imageSize) {
+      baseX = 0;
+      baseY += cellHeight;
     }
 
-    if (baseY + img_height + fsize - face->glyph->bitmap_top > size) {
-      png.save(outpath + convert<std::string>(outIndex) + ".png");
+    if (baseY + cellHeight > imageSize) {
+      png.save(outFolder + convert<std::string>(outIndex) + ".png");
       png.clear();
       outIndex++;
-      baseX = 1;
-      baseY = 1;
-      nextY = 1;
+      baseX = 0;
+      baseY = 0;
     }
 
     auto x = baseX, y = baseY;
-    y += fsize - face->glyph->bitmap_top;
+
+    if (outtext.good()) {
+      outtext << outIndex << '\t' << Utils::unicodeUtf8(u) << '\t' << u << '\t' << x << '\t' << y << '\t' << img_width <<  '\t' << cellHeight << '\n';
+    }
+
+    y += baseHeight - img_height + hang;
     
     for ( int xx = 0 ; xx < bitmap.width ; ++xx )
     {
@@ -122,11 +131,10 @@ int main(int argc, char* argv[])
       }
     }
 
-    baseX += img_width + 1;
-    nextY = std::max(nextY, y + img_height);
+    baseX += img_width;
   }
 
-  png.save(outpath + convert<std::string>(outIndex) + ".png");
+  png.save(outFolder + convert<std::string>(outIndex) + ".png");
 
   return 0;
 }
