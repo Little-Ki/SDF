@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
   for(auto& u : ucode) {
     FT_UInt index;
-    index = FT_Get_Char_Index(face, u );
+    index = FT_Get_Char_Index(face, u.second[0]);
     HANDLE_ERR(FT_Load_Glyph(face, index , FT_LOAD_DEFAULT));
     const auto& metrics = face->glyph->metrics;
     auto hang = (metrics.height - metrics.horiBearingY) / 64;
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
   
   for(auto& u : ucode) {
     FT_UInt index;
-    index = FT_Get_Char_Index(face , u);
+    index = FT_Get_Char_Index(face , u.second[0]);
     HANDLE_ERR(FT_Load_Glyph(face, index , FT_LOAD_DEFAULT));
     HANDLE_ERR(FT_Render_Glyph(face->glyph , FT_RENDER_MODE_SDF));
     const auto& bitmap = face->glyph->bitmap;
@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
     auto x = baseX, y = baseY;
 
     if (outtext.good()) {
-      outtext << outIndex << '\t' << Utils::unicodeUtf8(u) << '\t' << u << '\t' << x << '\t' << y << '\t' << img_width <<  '\t' << cellHeight << '\n';
+      outtext << outIndex << '\t' << u.first << '\t' << u.second[0] << '\t' << x << '\t' << y << '\t' << img_width <<  '\t' << cellHeight << '\n';
     }
 
     y += baseHeight - img_height + hang;
@@ -135,6 +135,12 @@ int main(int argc, char* argv[])
   }
 
   png.save(outFolder + convert<std::string>(outIndex) + ".png");
+  
+  HANDLE_ERR(FT_Done_FreeType(library));
+
+  std::cout << "Done\n";
+
+  std::getchar();
 
   return 0;
 }

@@ -3,18 +3,13 @@
 
 #include <codecvt> 
 #include <locale> 
+#include <vector>
 
 namespace Utils {
+
+  std::vector<std::pair<std::string, std::u32string>> utf8Unicode(const std::string& str) ;
   
-  std::u32string utf8Unicode(const std::string& str ) ;
-
-  std::string unicodeUtf8(const std::u32string& str );
-
-  template<typename T>
-  std::string unicodeUtf8(const T& in) {
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
-    return converter.to_bytes(in);
-  }
+  std::vector<std::string> splitUtf8(const std::string& str);
 
   std::string loadFile(std::string& path);
 
