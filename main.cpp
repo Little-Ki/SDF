@@ -137,7 +137,8 @@ int main(int argc, char* argv[])
   png.save(outFolder + convert<std::string>(outIndex) + ".png");
   
   HANDLE_ERR(FT_Done_FreeType(library));
-
+  HANDLE_ERR(FT_Done_Face(face));
+  
   std::cout << "Done\n";
 
   std::getchar();
